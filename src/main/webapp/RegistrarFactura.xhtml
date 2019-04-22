@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="estilo.css" media="screen" />
+<title>La mejor Cocina</title>
+</head>
+<body>
+	<div id="header">
+		<div id="logo">
+			<h1>Registrar Factura</h1>
+		</div>
+		<div class="clr"></div>
+		<div class="content">
+			<div class="col">
+
+				<h:form>
+
+					<h:outputLabel>Datos Cliente</h:outputLabel>
+					<h:panelGrid id="DatosCliente">
+						<h:outputLabel>Cedula</h:outputLabel>
+						<h:inputText value="#{facturaBean.cliente.idcliente}"></h:inputText>
+
+						<h:outputLabel>Nombre</h:outputLabel>
+						<h:inputText value="#{facturaBean.cliente.nombre}"></h:inputText>
+
+						<h:outputLabel>Apellido1</h:outputLabel>
+						<h:inputText value="#{facturaBean.cliente.apellido1}"></h:inputText>
+
+						<h:outputLabel>Apellido2</h:outputLabel>
+						<h:inputText value="#{facturaBean.cliente.apellido2}"></h:inputText>
+					</h:panelGrid>
+
+					<br></br>
+
+					<h:outputLabel>Datos Camarero</h:outputLabel>
+					<h:panelGrid id="DatosCamarero">
+						<h:selectOneMenu
+							value="#{facturaBean.factura.camarero.idcamarero}">
+							<f:selectItem itemLabel="Seleccione un Camarero"
+								itemValue="#{null}" />
+							<f:selectItems value="#{camareroBean.listaCamareros}"
+								var="camarero" itemValue="#{camarero.idcamarero}"
+								itemLabel="#{camarero.nombre} #{camarero.apellido1}" />
+						</h:selectOneMenu>
+					</h:panelGrid>
+					<br></br>
+
+					<h:panelGrid id="DatosFactura">
+						<h:outputLabel>Numero de Factura:</h:outputLabel>
+						<h:inputText value="#{facturaBean.factura.idfactura}"></h:inputText>
+						<br></br>
+					</h:panelGrid>
+					<br></br>
+
+					<h:outputLabel>Mesa: </h:outputLabel>
+					<h:selectOneMenu value="#{facturaBean.factura.mesa.idmesa}">
+						<f:selectItem itemLabel="Seleccione una Mesa" itemValue="#{null}" />
+						<f:selectItems value="#{mesaBean.listaMesas}" var="mesa"
+							itemValue="#{mesa.idmesa}" itemLabel="#{mesa.idmesa}" />
+					</h:selectOneMenu>
+
+					<br></br>
+					<br></br>
+					<h:outputLabel>Platos </h:outputLabel>
+					<h:selectManyCheckbox value="#{facturaBean.platos}">
+						<f:selectItem itemValue="Pollo apanado - $50.000"
+							itemLabel="Pollo apanado - $50.000" />
+						<f:selectItem itemValue="Copa de tomate - $20.000"
+							itemLabel="Copa de tomate - $20.000" />
+						<f:selectItem itemValue="Arroz mixto - $40.000"
+							itemLabel="Arroz mixto - $40.000" />
+						<f:selectItem itemValue="Pasta Carbonara - $40.000"
+							itemLabel="Pasta Carbonara - $40.000" />
+						<f:selectItem itemValue="Pollo thai - $50.000"
+							itemLabel="Pollo thai - $50.000" />
+						<f:selectItem itemValue="Ensalada- $10.000"
+							itemLabel="Ensalada- $10.000" />
+					</h:selectManyCheckbox>
+
+					<br></br>
+					<h:commandButton value="finalizar registro"
+						action="#{facturaBean.insertar}"></h:commandButton>
+				</h:form>
+			</div>
+		</div>
+		<div id="footer"></div>
+	</div>
+</body>
+</html>
