@@ -1,0 +1,110 @@
+CREATE TABLE CLIENTE (
+  IDCLIENTE      int   NOT NULL,
+  NOMBRE          VARCHAR(50)  NOT NULL,
+  APELLIDO1       VARCHAR(50)   NULL,
+  APELLIDO2       VARCHAR(50)  NULL,
+  OBSERVACIONES   VARCHAR(200)         NULL,
+  PRIMARY KEY (IDCLIENTE)
+);
+
+CREATE TABLE MESA (
+  IDMESA      int         NOT NULL,
+  NUMEROMAXCOMENSALES         int  NOT NULL,
+  UBICACION   VARCHAR(100)   NOT NULL,
+  PRIMARY KEY (IDMESA)
+);
+
+CREATE TABLE CAMARERO (
+  IDCAMARERO     INT   NOT NULL,
+  NOMBRE          VARCHAR(50)  NOT NULL,
+  APELLIDO1       VARCHAR(50)   NULL,
+  APELLIDO2       VARCHAR(50)   NULL,
+  PRIMARY KEY (IDCAMARERO)
+);
+
+
+CREATE TABLE FACTURA (
+  IDFACTURA      INT   NOT NULL,
+  IDCLIENTE      INT   NOT NULL,
+  IDCAMARERO     INT   NOT NULL,
+  IDMESA         INT   NOT NULL,
+  FECHAFACTURA   DATE      NOT NULL,
+  PRIMARY KEY (IDFACTURA),
+  foreign key (IDCLIENTE) references CLIENTE(IDCLIENTE),
+  foreign key (IDCAMARERO) references CAMARERO(IDCAMARERO),
+  foreign key (IDMESA) references MESA(IDMESA)
+);
+
+CREATE TABLE COCINERO (
+  IDCOCINERO      INT   NOT NULL,
+  NOMBRE          VARCHAR(50)  NOT NULL,
+  APELLIDO1       VARCHAR(50)   NULL,
+  APELLIDO2       VARCHAR(50)   NULL,
+  PRIMARY KEY (IDCOCINERO)
+);
+
+CREATE TABLE DETALLEFACTURA (
+  IDDETALLEFACTURA  INT   NOT NULL,
+  IDFACTURA        INT   NOT NULL,
+  IDCOCINERO        INT   NOT NULL,
+  PLATO             VARCHAR(100)   NOT NULL,
+  IMPORTE           INT     NOT NULL,
+  PRIMARY KEY (IDDETALLEFACTURA),
+  foreign key (IDFACTURA) references FACTURA(IDFACTURA),
+  foreign key (IDCOCINERO) references COCINERO(IDCOCINERO)
+);
+
+
+INSERT INTO `prueba`.`cliente` (`IDCLIENTE`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`, `OBSERVACIONES`) VALUES ('101101010', 'ANGELA', 'AMAYA', 'NARIÑO', ' PLATOS DE MAR');
+INSERT INTO `prueba`.`cliente` (`IDCLIENTE`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`, `OBSERVACIONES`) VALUES ('10827278', 'JUAN', 'DAVID', 'PEREZ', 'ARROZ DE COCO');
+INSERT INTO `prueba`.`cliente` (`IDCLIENTE`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`, `OBSERVACIONES`) VALUES ('192819281', 'LUIS', 'ORTEGA', 'HERRERA', 'PASTA');
+
+
+
+
+INSERT INTO `prueba`.`camarero` (`IDCAMARERO`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`) VALUES ('123456', 'CRISTIAN', 'SUAREZ', 'PEREZ');
+INSERT INTO `prueba`.`camarero` (`IDCAMARERO`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`) VALUES ('3733737', 'DEISY', 'VILLA', 'PANCHO');
+INSERT INTO `prueba`.`camarero` (`IDCAMARERO`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`) VALUES ('1921878', 'CAMILA', 'GUTIERREZ', 'ALVARADO');
+
+INSERT INTO `prueba`.`cocinero` (`IDCOCINERO`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`) VALUES ('552525', 'MARIA', 'BERMUDEZ', 'CASTAÑO');
+INSERT INTO `prueba`.`cocinero` (`IDCOCINERO`, `NOMBRE`, `APELLIDO1`, `APELLIDO2`) VALUES ('552525', 'MARIA', 'BERMUDEZ', 'CASTAÑO');
+
+
+INSERT INTO `prueba`.`mesa` (`IDMESA`, `NUMEROMAXCOMENSALES`, `UBICACION`) VALUES ('1', '4', 'IZQUIERDA');
+INSERT INTO `prueba`.`mesa` (`IDMESA`, `NUMEROMAXCOMENSALES`, `UBICACION`) VALUES ('2', '5', 'DERECHA CENTRO');
+INSERT INTO `prueba`.`mesa` (`IDMESA`, `NUMEROMAXCOMENSALES`, `UBICACION`) VALUES ('3', '8', 'DERECHA AL FONDO');
+INSERT INTO `prueba`.`mesa` (`IDMESA`, `NUMEROMAXCOMENSALES`, `UBICACION`) VALUES ('4', '7', 'IZQUIERDA FONDO');
+
+
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('1', '101101010', '123456', '1', '2018-12-28');
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('2', '101101010', '123456', '3', '2018-12-25');
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('3', '101101010', '123456', '3', '2018-12-26');
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('4', '101101010', '123456', '3', '2018-12-26');
+
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('5', '10827278', '3733737', '2', '2018-12-25');
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('6', '10827278', '123456', '4', '2019-01-26');
+INSERT INTO `prueba`.`factura` (`IDFACTURA`, `IDCLIENTE`, `IDCAMARERO`, `IDMESA`, `FECHAFACTURA`) VALUES ('7', '10827278', '123456', '1', '2018-01-28');
+
+
+
+INSERT INTO `prueba`.`detallefactura` (`IDDETALLEFACTURA`, `IDFACTURA`, `IDCOCINERO`, `PLATO`, `IMPORTE`) VALUES ('12', '7', '552525', 'postra de maracuya', '8000');
+
+
+DELIMITER $$ 
+CREATE PROCEDURE prueba.proc_factcamarero () BEGIN
+select cd.idcamarero,c.nombre,c.apellido1,c.apellido2,MONTH(f.fechafactura) as mes,sum(d.importe) as total
+from Camarero c left join factura f on c.idcamarero=f.idcamarero left join detallefactura d on d.idfactura=f.idfactura
+ group by c.nombre,c.Apellido1,c.apellido2, MONTH(f.fechafactura);
+ END$$
+DELIMITER ;
+
+
+DELIMITER $$ 
+CREATE PROCEDURE prueba.proc_gastoscliente () BEGIN
+select * from(  
+select c.idcliente,c.nombre,c.apellido1,c.apellido2,sum(d.importe) as gastos
+from cliente c inner join factura f on c.idcliente=f.idcliente inner join detallefactura d on d.idfactura=f.idfactura
+group by c.nombre,c.Apellido1,c.apellido2) as cli
+where cli.gastos>100000;
+ END$$
+DELIMITER ;
